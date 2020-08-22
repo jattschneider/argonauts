@@ -17,24 +17,34 @@ import (
 )
 
 func main() {
+	// Generate salt
 	salt, err := argonauts.Salt()
 	if err != nil {
 		panic(err)
 	}
+
+	// Can can be saved as string and read back with	
+	// salt, err := argonauts.ReadString(saltString)
+	//
 	saltString := argonauts.Sprint(salt)
 	fmt.Println(saltString)
 
+	// Generate password hash
 	opts := argonauts.DefaultOptions(salt)
 	passwd := "somerandompassword"
 	hash := argonauts.Hash(opts, []byte(passwd))
 
+	// Also can be saved as string
 	hashString := argonauts.Sprint(hash)
 	fmt.Println(hashString)
+
+	// Then it can be read back to a byte array
 	h, err := argonauts.ReadString(hashString)
 	if err != nil {
 		panic(err)
 	}
 
+	// Compare clear password with the password hash
 	if match, err := argonauts.Compare(opts, []byte(passwd), h); err == nil && match {
 		fmt.Println("password match!")
 	}
